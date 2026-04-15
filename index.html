@@ -187,11 +187,12 @@
 <script>
   var money = 100;
   var rollsLeft = 5;
+  var rollCount = 0;
 
   function fmt(n) { return "$" + Math.round(n).toLocaleString(); }
 
   function rollDice() {
-    if (rollsLeft <= 0) return;
+    if (rollsLeft <= 0) return; rollCount++;
     var roll = Math.floor(Math.random() * 6) + 1;
     var die = document.getElementById("die");
     die.textContent = roll;
@@ -229,7 +230,7 @@
 
     var chip = document.createElement("div");
     chip.className = "chip " + (type === "good" ? "g" : "b");
-    chip.textContent = "Roll " + (6 - rollsLeft) + ": " + roll;
+    chip.textContent = "Roll " + rollCount + ": " + roll;
     document.getElementById("roll-history").appendChild(chip);
 
     if (rollsLeft === 0) {
@@ -258,6 +259,7 @@
   }
 
   function resetGame() {
+    rollCount = 0;
     money = 100;
     rollsLeft = 5;
     document.getElementById("money").textContent = "$100";
