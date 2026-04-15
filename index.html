@@ -191,37 +191,38 @@
 
   function fmt(n) { return "$" + Math.round(n).toLocaleString(); }
 
-  function rollDice() {
-    if (rollsLeft <= 0) return;
+function rollDice() {
+  if (rollsLeft <= 0) return;
 
-    var die = document.getElementById("die");
+  rollCount++;
 
-    // show rolling state FIRST
-    die.textContent = "🎲";
-    die.classList.add("rolling");
+  var die = document.getElementById("die");
 
-    setTimeout(function () {
-    if (rollsLeft <= 0) return; rollCount++;
+  // show rolling animation first
+  die.textContent = "🎲";
+  die.classList.add("rolling");
+
+  setTimeout(function () {
+
     var roll = Math.floor(Math.random() * 6) + 1;
-    var die = document.getElementById("die");
+
     die.textContent = roll;
     die.classList.remove("rolling");
     void die.offsetWidth;
     die.classList.add("rolling");
-  }, 300);
-}
+
+    // ===== YOUR ORIGINAL LOGIC STARTS HERE =====
+
     var prev = money;
     var desc = "", type = "";
 
     if      (roll === 1) { money = money / 2;              desc = "Cut in half! " + fmt(prev) + " → " + fmt(money); type = "bad"; }
-    else if (roll === 2) { money = Math.max(0, money - 25); desc = "-$25 " + fmt(prev) + " → " + fmt(money);       type = "bad"; }
-    else if (roll === 3) { money = Math.max(0, money - 5);  desc = "-$5 " + fmt(prev) + " → " + fmt(money);        type = "bad"; }
-    else if (roll === 4) { money = money + 5;               desc = "+$5 " + fmt(prev) + " → " + fmt(money);        type = "good"; }
-    else if (roll === 5) { money = money + 25;              desc = "+$25 " + fmt(prev) + " → " + fmt(money);       type = "good"; }
-    else if (roll === 6) { money = money * 2;               desc = "Doubled! " + fmt(prev) + " → " + fmt(money);   type = "good"; }
+    else if (roll === 2) { money = Math.max(0, money - 25); desc = "-$25. " + fmt(prev) + " → " + fmt(money); type = "bad"; }
+    else if (roll === 3) { money = Math.max(0, money - 5);  desc = "-$5. " + fmt(prev) + " → " + fmt(money); type = "bad"; }
+    else if (roll === 4) { money = money + 5;               desc = "+$5. " + fmt(prev) + " → " + fmt(money); type = "good"; }
+    else if (roll === 5) { money = money + 25;              desc = "+$25. " + fmt(prev) + " → " + fmt(money); type = "good"; }
+    else if (roll === 6) { money = money * 2;              desc = "Doubled! " + fmt(prev) + " → " + fmt(money); type = "good"; }
 
-    var tag = roll <= 3 ? "Represents inflation" : "Represents interest";
-    var label = roll <= 3 ? "Inflation hit!" : "Interest earned!";
     rollsLeft--;
 
     document.getElementById("money").textContent = fmt(money);
@@ -229,14 +230,15 @@
 
     var diff = Math.round(money) - 100;
     var changeEl = document.getElementById("change");
-    changeEl.textContent = (diff >= 0 ? "+" : "-") + "$" + Math.abs(diff);
-    changeEl.className = "stat-val " + (diff > 0 ? "pos" : diff < 0 ? "neg" : "");
+    changeEl.textContent = (diff >= 0 ? "+" : "") + fmt(diff);
 
     var card = document.getElementById("result-card");
     card.className = "result-card " + type;
-    document.getElementById("result-label").textContent = label;
+    document.getElementById("result-label").textContent =
+      roll <= 3 ? "Inflation hit!" : "Interest earned!";
     document.getElementById("result-main").textContent = desc;
-    document.getElementById("result-tag").textContent = tag;
+    document.getElementById("result-tag").textContent =
+      roll <= 3 ? "Represents inflation" : "Represents interest";
 
     var chip = document.createElement("div");
     chip.className = "chip " + (type === "good" ? "g" : "b");
@@ -247,7 +249,9 @@
       document.getElementById("roll-btn").disabled = true;
       showSummary();
     }
-  }
+
+  }, 300);
+}
 
   function showSummary() {
     var summary = document.getElementById("summary");
