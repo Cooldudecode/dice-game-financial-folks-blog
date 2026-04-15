@@ -202,55 +202,63 @@ function rollDice() {
   die.textContent = "🎲";
   die.classList.add("rolling");
 
-  setTimeout(function () {
+  var rollInterval = setInterval(function () {
+  die.textContent = Math.floor(Math.random() * 6) + 1;
+}, 80);
 
-    var roll = Math.floor(Math.random() * 6) + 1;
+setTimeout(function () {
 
-    die.textContent = roll;
-    die.classList.remove("rolling");
-    void die.offsetWidth;
-    die.classList.add("rolling");
+  clearInterval(rollInterval);
 
-    // ===== YOUR ORIGINAL LOGIC STARTS HERE =====
+  var roll = Math.floor(Math.random() * 6) + 1;
 
-    var prev = money;
-    var desc = "", type = "";
+  die.textContent = roll;
+  die.classList.remove("rolling");
+  void die.offsetWidth;
+  die.classList.add("rolling");
 
-    if      (roll === 1) { money = money / 2;              desc = "Cut in half! " + fmt(prev) + " → " + fmt(money); type = "bad"; }
-    else if (roll === 2) { money = Math.max(0, money - 25); desc = "-$25. " + fmt(prev) + " → " + fmt(money); type = "bad"; }
-    else if (roll === 3) { money = Math.max(0, money - 5);  desc = "-$5. " + fmt(prev) + " → " + fmt(money); type = "bad"; }
-    else if (roll === 4) { money = money + 5;               desc = "+$5. " + fmt(prev) + " → " + fmt(money); type = "good"; }
-    else if (roll === 5) { money = money + 25;              desc = "+$25. " + fmt(prev) + " → " + fmt(money); type = "good"; }
-    else if (roll === 6) { money = money * 2;              desc = "Doubled! " + fmt(prev) + " → " + fmt(money); type = "good"; }
+  var prev = money;
+  var desc = "", type = "";
 
-    rollsLeft--;
+  if      (roll === 1) { money = money / 2; desc = "Cut in half! " + fmt(prev) + " → " + fmt(money); type = "bad"; }
+  else if (roll === 2) { money = Math.max(0, money - 25); desc = "-$25. " + fmt(prev) + " → " + fmt(money); type = "bad"; }
+  else if (roll === 3) { money = Math.max(0, money - 5);  desc = "-$5. " + fmt(prev) + " → " + fmt(money); type = "bad"; }
+  else if (roll === 4) { money = money + 5; desc = "+$5. " + fmt(prev) + " → " + fmt(money); type = "good"; }
+  else if (roll === 5) { money = money + 25; desc = "+$25. " + fmt(prev) + " → " + fmt(money); type = "good"; }
+  else if (roll === 6) { money = money * 2; desc = "Doubled! " + fmt(prev) + " → " + fmt(money); type = "good"; }
 
-    document.getElementById("money").textContent = fmt(money);
-    document.getElementById("rolls-left").textContent = rollsLeft;
+  rollCount++;
+  rollsLeft--;
 
-    var diff = Math.round(money) - 100;
-    var changeEl = document.getElementById("change");
-    changeEl.textContent = (diff >= 0 ? "+" : "") + fmt(diff);
+  document.getElementById("money").textContent = fmt(money);
+  document.getElementById("rolls-left").textContent = rollsLeft;
 
-    var card = document.getElementById("result-card");
-    card.className = "result-card " + type;
-    document.getElementById("result-label").textContent =
-      roll <= 3 ? "Inflation hit!" : "Interest earned!";
-    document.getElementById("result-main").textContent = desc;
-    document.getElementById("result-tag").textContent =
-      roll <= 3 ? "Represents inflation" : "Represents interest";
+  var diff = Math.round(money) - 100;
+  var changeEl = document.getElementById("change");
+  changeEl.textContent = (diff >= 0 ? "+" : "") + fmt(diff);
 
-    var chip = document.createElement("div");
-    chip.className = "chip " + (type === "good" ? "g" : "b");
-    chip.textContent = "Roll " + rollCount + ": " + roll;
-    document.getElementById("roll-history").appendChild(chip);
+  var card = document.getElementById("result-card");
+  card.className = "result-card " + type;
 
-    if (rollsLeft === 0) {
-      document.getElementById("roll-btn").disabled = true;
-      showSummary();
-    }
+  document.getElementById("result-label").textContent =
+    roll <= 3 ? "Inflation hit!" : "Interest earned!";
 
-  }, 300);
+  document.getElementById("result-main").textContent = desc;
+
+  document.getElementById("result-tag").textContent =
+    roll <= 3 ? "Represents inflation" : "Represents interest";
+
+  var chip = document.createElement("div");
+  chip.className = "chip " + (type === "good" ? "g" : "b");
+  chip.textContent = "Roll " + rollCount + ": " + roll;
+  document.getElementById("roll-history").appendChild(chip);
+
+  if (rollsLeft === 0) {
+    document.getElementById("roll-btn").disabled = true;
+    showSummary();
+  }
+
+}, 900);
 }
 
   function showSummary() {
