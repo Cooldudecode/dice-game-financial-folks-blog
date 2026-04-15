@@ -192,16 +192,6 @@
   function fmt(n) { return "$" + Math.round(n).toLocaleString(); }
 
 function rollDice() {
-  if (rollsLeft <= 0) return;
-
-  rollCount++;
-
-  var die = document.getElementById("die");
-
-  // show rolling animation first
-  die.textContent = "🎲";
-  die.classList.add("rolling");
-
   var rollInterval = setInterval(function () {
   die.textContent = Math.floor(Math.random() * 6) + 1;
 }, 80);
