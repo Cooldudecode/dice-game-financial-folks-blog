@@ -192,6 +192,15 @@
   function fmt(n) { return "$" + Math.round(n).toLocaleString(); }
 
   function rollDice() {
+    if (rollsLeft <= 0) return;
+
+    var die = document.getElementById("die");
+
+    // show rolling state FIRST
+    die.textContent = "🎲";
+    die.classList.add("rolling");
+
+    setTimeout(function () {
     if (rollsLeft <= 0) return; rollCount++;
     var roll = Math.floor(Math.random() * 6) + 1;
     var die = document.getElementById("die");
@@ -199,15 +208,16 @@
     die.classList.remove("rolling");
     void die.offsetWidth;
     die.classList.add("rolling");
-
+  }, 300);
+}
     var prev = money;
     var desc = "", type = "";
 
     if      (roll === 1) { money = money / 2;              desc = "Cut in half! " + fmt(prev) + " → " + fmt(money); type = "bad"; }
-    else if (roll === 2) { money = Math.max(0, money - 25); desc = "-$25. " + fmt(prev) + " → " + fmt(money);       type = "bad"; }
-    else if (roll === 3) { money = Math.max(0, money - 5);  desc = "-$5. " + fmt(prev) + " → " + fmt(money);        type = "bad"; }
-    else if (roll === 4) { money = money + 5;               desc = "+$5. " + fmt(prev) + " → " + fmt(money);        type = "good"; }
-    else if (roll === 5) { money = money + 25;              desc = "+$25. " + fmt(prev) + " → " + fmt(money);       type = "good"; }
+    else if (roll === 2) { money = Math.max(0, money - 25); desc = "-$25 " + fmt(prev) + " → " + fmt(money);       type = "bad"; }
+    else if (roll === 3) { money = Math.max(0, money - 5);  desc = "-$5 " + fmt(prev) + " → " + fmt(money);        type = "bad"; }
+    else if (roll === 4) { money = money + 5;               desc = "+$5 " + fmt(prev) + " → " + fmt(money);        type = "good"; }
+    else if (roll === 5) { money = money + 25;              desc = "+$25 " + fmt(prev) + " → " + fmt(money);       type = "good"; }
     else if (roll === 6) { money = money * 2;               desc = "Doubled! " + fmt(prev) + " → " + fmt(money);   type = "good"; }
 
     var tag = roll <= 3 ? "Represents inflation" : "Represents interest";
